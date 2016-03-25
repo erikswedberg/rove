@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="css/styles.css" />
+<body onload="loadExtras()">
+<script src="js/d3.v3.min.js"></script>
+<script src="js/d3.geo.tile.min.js"></script>
+<script src="js/queue.v1.min.js"></script>
+<script src="js/d3.tip.v0.6.3.js"></script>
+<script type='text/javascript'>
+  
+  //var layers = ['water', 'landuse', 'roads', 'buildings'];
+  var layers = ['water-areas'];
+  var kinds = ['park', 'ocean', 'water','major_road', 'minor_road', 'highway'];
+  
+  window.loadExtras = function() {
+	queue()
+	    .defer(d3.json, "geo/parks.json")
+//	  .defer(d3.json, "tracts.json")
+	    .await(ready);
+
+	vector.call(tip);
+
+
+	function ready(error, data) {
+	  if (error) throw error;
+
+      var features = [];
+//       layers.forEach(function(layer){
+//         if(data[layer])
+//         {
+             for(var i in data.features)
+             {
+//                 // Don't include any label placement points
+//                 if(data[layer].features[i].properties.label_placement == 'yes') { continue }
+//
+//                 // Don't show large buildings at z13 or below.
+//                 if(zoom <= 13 && layer == 'buildings') { continue }
+//
+//                 // Don't show small buildings at z14 or below.
+//                 if(zoom <= 14 && layer == 'buildings' && data[layer].features[i].properties.area < 2000) { continue }
+//
+ //                data.features[i].id = i;
+                 features.push(data.features[i]);
+             }
+
+	  vector.call(zoom);
+	  vector.append("g")
+		  .attr("class", "tile")
+	    .selectAll("path")
+	      .data(data.features)
+	    .enter().append("path")
+		  .attr("class", function(d, i) {
+			  return "park "+sanitizeURLName(d.id);
+		  })
+		  .attr("d", path)
+		  .on('mouseover', tip.show)
+		  .on('mouseout', tip.hide);
+	  zoomed();
+	     //.datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+	      //.attr("class", "states")
+	      //.attr("d", path);
+
+	/*
+	  svg.append("g")
+	      .attr("class", "counties")
+	    .selectAll("path")
+	      .data(topojson.feature(us, us.objects.counties).features)
+	    .enter().append("path")
+	      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
+	      .attr("d", path);
+
+	  svg.append("path")
+	      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+	      .attr("class", "states")
+	      .attr("d", path);
+	  */
+	}
+  
+  
+	//   d3.json("parks2.json", function(error, data) {
+	//     if (error) throw error;
+	//
+	// console.log(data);
+	//
+	//     //svg.call(zoom);
+	//     //vector.attr("d", path(topojson.mesh(us, us.objects.counties)));
+	//     //zoomed();
+	//   });
+  }
+  
+  window.renderTiles = function(d) {
+    var svg = d3.select(this);
+    var zoom = d[2];
+
+    this._xhr = d3.json("http://" + ["a", "b", "c"][(d[0] * 31 + d[1]) % 3] + ".tile.openstreetmap.us/vectiles-water-areas/" + d[2] + "/" + d[0] + "/" + d[1] + ".json", function(error, data) {
+    
+      var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
+
+      tilePath.projection()
+          .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
+          .scale(k / 2 / Math.PI)
+          .precision(0);
+
+      // build up a single concatenated array of all tile features from all tile layers
+      var features = [];
+//       layers.forEach(function(layer){
+//         if(data[layer])
+//         {
+             for(var i in data.features)
+             {
+//                 // Don't include any label placement points
+//                 if(data[layer].features[i].properties.label_placement == 'yes') { continue }
+//
+//                 // Don't show large buildings at z13 or below.
+//                 if(zoom <= 13 && layer == 'buildings') { continue }
+//
+//                 // Don't show small buildings at z14 or below.
+//                 if(zoom <= 14 && layer == 'buildings' && data[layer].features[i].properties.area < 2000) { continue }
+//
+                 data.features[i].layer_name = 'water';
+                 features.push(data.features[i]);
+             }
+//         }
+//       });
+
+      // put all the features into SVG paths
+      // svg.selectAll("path")
+ //        .data(features.sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 }))
+ //      .enter().append("path")
+ //        .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
+ //        .attr("d", tilePath);
+		svg.selectAll("path")
+		  .data(
+			  features.filter(function(d) { 
+				  if (kinds.indexOf(d['properties']['kind']) != -1) {
+					  return true;
+				  } else {
+					  return false;
+				  } 
+			  }).sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
+		  )
+		.enter().append("path")
+		  .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
+		  .attr("d", tilePath);
+    });
+		//     this._xhr2 = d3.json("http://" + ["a", "b", "c"][(d[0] * 31 + d[1]) % 3] + ".tile.openstreetmap.us/vectiles-highroad/" + d[2] + "/" + d[0] + "/" + d[1] + ".json", function(error, data) {
+		//
+		//       var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
+		//
+		//       tilePath.projection()
+		//           .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
+		//           .scale(k / 2 / Math.PI)
+		//           .precision(0);
+		//
+		//   var features = [];
+		//
+		//              for(var i in data.features)
+		//              {
+		//
+		//                  data.features[i].layer_name = 'road';
+		//                  features.push(data.features[i]);
+		//              }
+		//
+		// svg.selectAll("path")
+		//   .data(
+		// 	  features.filter(function(d) {
+		// 		  if (kinds.indexOf(d['properties']['kind']) != -1) {
+		// 			  return true;
+		// 		  } else {
+		// 			  return false;
+		// 		  }
+		// 	  }).sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
+		//   )
+		// .enter().append("path")
+		//   .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
+		//   .attr("d", tilePath);
+		//     });
+	
+  };
+  
+
+</script>
+<script src="js/scripts.js"></script>

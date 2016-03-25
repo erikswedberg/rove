@@ -1,0 +1,164 @@
+body {
+  margin: 0;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.map {
+  position: relative;
+  overflow: hidden;
+}
+
+.layer {
+  position: absolute;
+}
+
+.zoom-container {
+  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+  border-radius: 4px;
+  width: 26px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+a.zoom {
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
+}
+
+a.zoom:hover {
+  background-color:#f4f4f4;
+}
+
+a.zoom:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+a.zoom:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.tile {
+  position: absolute;
+  width: 256px;
+  height: 256px;
+}
+
+.tile path {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.tile .water-layer, .tile .river, .tile .stream, .tile .canal { fill: none; stroke: #9DD9D2; stroke-width: 1.5px; }
+.tile .water, .tile .ocean { fill: rgba(176,224,230, 0.3); }
+.tile .riverbank { fill: #9DD9D2; }
+.tile .water_boundary, .tile .ocean_boundary, .tile .riverbank_boundary { fill: none; stroke: #93cbc4; stroke-width: 0.5px; }
+.tile .major_road { stroke: #fb7b7a; stroke-width: 1px; }
+.tile .minor_road { stroke: #999; stroke-width: 0.5px; }
+.tile .highway { stroke: #FA4A48; stroke-width: 1.5px; }
+.tile .buildings-layer { stroke: #987284; stroke-width: 0.15px; }
+.tile .park, .tile .nature_reserve, .tile .wood, .tile .protected_land { fill: rgba(117,204,116,0.3); stroke: #88D18A; stroke-width: 0.5px; }
+.tile .rail { stroke: #503D3F; stroke-width: 0.5px; }
+.tile .park:hover {
+	 fill: rgba(117,204,116,0.5);
+}
+.info {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  padding: 0px 5px;
+  font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-size: 11px;
+}
+
+.info a {
+  text-decoration: none;
+  color: #0078a8;
+}
+
+.info a:hover {
+  text-decoration: underline;
+}
+
+/* For non touch devices, move control out of the way at small window widths */
+@media (max-width: 752px) {
+  /* 767px - 15px for scrollbar */
+  .mapzen-demo-iframed .zoom-container {
+    top: 50px;
+  }
+}
+
+.extras {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.extras .tile {
+	fill: rgba(117,204,116,0.3); stroke: #88D18A; stroke-width: 0.5px;
+}
+
+/* hiding the background of areas which are within other, bigger areas */
+.tile .point-bonita, .tile .rodeo-beach, .tile .rodeo-lagoon-valley, .tile .rocky-point, .tile .hawk-hill, .tile .baker-beach, .tile .fort-point, .tile .golden-gate-bridge {
+	fill: none;
+}
+
+.tile .mount-tamalpais-state-park, .tile .point-reyes-national-seashore, .tile .bolinas-lagoon {
+	fill: rgba(117,204,116,0.1);
+}
+.tile .mount-tamalpais-state-park:hover, .tile .point-reyes-national-seashore:hover, .tile .bolinas-lagoon:hover {
+	fill: rgba(117,204,116,0.1);
+}
+.tile .test {
+	fill: #ff0000;
+}
+.d3-tip {
+	font-size: small;
+  line-height: 1;
+  font-weight: bold;
+  padding: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #333;
+  border-radius: 2px;
+}
+
+.acres {
+	font-size: smallest;
+	color: #999;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.2);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
