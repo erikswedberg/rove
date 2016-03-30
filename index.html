@@ -10,6 +10,7 @@
 <script type='text/javascript'>
   
   //var layers = ['water', 'landuse', 'roads', 'buildings'];
+  
   var layers = ['water-areas'];
   var kinds = ['park', 'ocean', 'water','major_road', 'minor_road', 'highway'];
   
@@ -89,95 +90,132 @@
 	//   });
   }
   
-  window.renderTiles = function(d) {
-    var svg = d3.select(this);
-    var zoom = d[2];
+ window.renderTiles = function(d) {
+     var svg = d3.select(this);
+     var zoom = d[2];
 
-    this._xhr = d3.json("http://" + ["a", "b", "c"][(d[0] * 31 + d[1]) % 3] + ".tile.openstreetmap.us/vectiles-water-areas/" + d[2] + "/" + d[0] + "/" + d[1] + ".json", function(error, data) {
-    
-      var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
+     this._xhr = d3.json("http://" + ["a", "b", "c"][(d[0] * 31 + d[1]) % 3] + ".tile.openstreetmap.us/vectiles-water-areas/" + d[2] + "/" + d[0] + "/" + d[1] + ".json", function(error, data) {
 
-      tilePath.projection()
-          .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
-          .scale(k / 2 / Math.PI)
-          .precision(0);
+ 	//
 
-      // build up a single concatenated array of all tile features from all tile layers
-      var features = [];
+       var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
+
+       tilePath.projection()
+           .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
+           .scale(k / 2 / Math.PI)
+           .precision(0);
+
+       // build up a single concatenated array of all tile features from all tile layers
+       var features = [];
+              for(var i in data.features)
+              {
+                  data.features[i].layer_name = 'water';
+                  features.push(data.features[i]);
+              }
+ 		svg.selectAll("path")
+ 		  .data(
+ 			  features.filter(function(d) {
+ 				  if (kinds.indexOf(d['properties']['kind']) != -1) {
+ 					  return true;
+ 				  } else {
+ 					  return false;
+ 				  }
+ 			  }).sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
+ 		  )
+ 		.enter().append("path")
+ 		  .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
+ 		  .attr("d", tilePath);
+     });
+
+
+   };
+  
+  
+  
+//   //var layers = ['water', 'landuse', 'roads', 'buildings', 'boundaries', 'earth', 'landuse_labels', 'places', 'pois', 'transit'];
+//   //var layers = ['water', 'landuse', 'roads', 'earth', 'landuse_labels', 'places', 'pois', 'transit'];
+//   var layers = ['water', 'landuse', 'roads'];
+//   //var layers = ['water-areas'];
+//   //var kinds = ['park', 'ocean', 'water','major_road', 'minor_road', 'highway'];
+//   //var kinds = ['ocean', 'water', 'path', 'park', 'beach', 'national_park', 'parking', 'protected_area', 'wood', 'forest', 'nature_reserve', 'meadow', 'quarry', 'wetland', 'farm', 'apron', 'farmland', 'scrub', 'military', 'garden', 'pitch', 'farmyard', 'recreation_ground', 'grass'];
+//
+//   window.renderTiles = function(d) {
+//     var svg = d3.select(this);
+//     var zoom = d[2];
+// 	var found = [];
+//
+//     this._xhr = d3.json("https://vector.mapzen.com/osm/water,roads,landuse/" + zoom + "/" + d[0] + "/" + d[1] + ".json?api_key=vector-tiles-Q32AbNt", function(error, data) {
+//       var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
+//
+//       tilePath.projection()
+//           .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
+//           .scale(k / 2 / Math.PI)
+//           .precision(0);
+//
+//
+// 		  //console.log(data);
+//       // build up a single concatenated array of all tile features from all tile layers
+//       var features = [];
+//
+//
+//
 //       layers.forEach(function(layer){
+//
+// 	  if (found.indexOf(layer) == -1) {
+// 		  found[layer] = [];
+// 	  }
+//
 //         if(data[layer])
 //         {
-             for(var i in data.features)
-             {
+//             for(var i in data[layer].features)
+//             {
 //                 // Don't include any label placement points
-//                 if(data[layer].features[i].properties.label_placement == 'yes') { continue }
+//                 //if(data[layer].features[i].properties.label_placement == 'yes') { continue }
 //
 //                 // Don't show large buildings at z13 or below.
-//                 if(zoom <= 13 && layer == 'buildings') { continue }
+//                 //if(zoom <= 13 && layer == 'buildings') { continue }
 //
 //                 // Don't show small buildings at z14 or below.
-//                 if(zoom <= 14 && layer == 'buildings' && data[layer].features[i].properties.area < 2000) { continue }
+//                 //if(zoom <= 14 && layer == 'buildings' && data[layer].features[i].properties.area < 2000) { continue }
 //
-                 data.features[i].layer_name = 'water';
-                 features.push(data.features[i]);
-             }
+// 				if ((typeof data[layer].features[i]['properties']['kind'] != 'undefined') && (data[layer].features[i]['properties']['kind'] == 'path')) {
+// 					console.log(data[layer].features[i]['properties']);
+// 				}
+//
+// 				if ((typeof data[layer].features[i]['properties']['kind'] != 'undefined') && found[layer].indexOf(data[layer].features[i]['properties']['kind']) == -1) {
+// 					found[layer].push(data[layer].features[i]['properties']['kind']);
+// 				}
+//
+//                 data[layer].features[i].layer_name = layer;
+//                 features.push(data[layer].features[i]);
+//             }
 //         }
 //       });
-
-      // put all the features into SVG paths
-      // svg.selectAll("path")
- //        .data(features.sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 }))
- //      .enter().append("path")
- //        .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
- //        .attr("d", tilePath);
-		svg.selectAll("path")
-		  .data(
-			  features.filter(function(d) { 
-				  if (kinds.indexOf(d['properties']['kind']) != -1) {
-					  return true;
-				  } else {
-					  return false;
-				  } 
-			  }).sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
-		  )
-		.enter().append("path")
-		  .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
-		  .attr("d", tilePath);
-    });
-		//     this._xhr2 = d3.json("http://" + ["a", "b", "c"][(d[0] * 31 + d[1]) % 3] + ".tile.openstreetmap.us/vectiles-highroad/" + d[2] + "/" + d[0] + "/" + d[1] + ".json", function(error, data) {
-		//
-		//       var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
-		//
-		//       tilePath.projection()
-		//           .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
-		//           .scale(k / 2 / Math.PI)
-		//           .precision(0);
-		//
-		//   var features = [];
-		//
-		//              for(var i in data.features)
-		//              {
-		//
-		//                  data.features[i].layer_name = 'road';
-		//                  features.push(data.features[i]);
-		//              }
-		//
-		// svg.selectAll("path")
-		//   .data(
-		// 	  features.filter(function(d) {
-		// 		  if (kinds.indexOf(d['properties']['kind']) != -1) {
-		// 			  return true;
-		// 		  } else {
-		// 			  return false;
-		// 		  }
-		// 	  }).sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
-		//   )
-		// .enter().append("path")
-		//   .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
-		//   .attr("d", tilePath);
-		//     });
-	
-  };
+//
+//
+//       console.log(found);
+//
+//       // put all the features into SVG paths
+//       svg.selectAll("path")
+//         .data(
+// 			//features.sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
+// 			features.filter(function(d) {
+// 						//if (kinds.indexOf(d['properties']['kind']) != -1) {
+// 							return true;
+// 						// } else {
+// // 							return false;
+// // 						}
+// 			 			  }).sort(function(a, b) { return a.properties.sort_key ? a.properties.sort_key - b.properties.sort_key : 0 })
+// 		)
+//       .enter().append("path")
+//         .attr("class", function(d) { var kind = d.properties.kind || ''; if(d.properties.boundary=='yes'){kind += '_boundary';} return d.layer_name + '-layer ' + kind; })
+//         .attr("d", tilePath);
+//
+// 		//console.log(found);
+//
+//     });
+//
+//   };
   
 
 </script>

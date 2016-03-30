@@ -74,6 +74,52 @@ a.zoom:last-child {
 .tile .park:hover {
 	 fill: rgba(117,204,116,0.5);
 }
+/*
+'ocean', 'water', 'path', 'park', 'beach', 'national_park', 'parking', 'protected_area', 'wood', 'forest', 'nature_reserve', 'meadow', 'quarry', 'wetland', 'farm', 'apron', 'farmland', 'scrub', 'military', 'garden', 'pitch', 'farmyard', 'recreation_ground', 'grass'
+
+*/
+/*
+.tile .major_road, .tile .minor_road, .tile .highway {
+	stroke: none; stroke-width: 0px;
+}
+.tile .water-layer, .tile .river, .tile .stream, .tile .canal {
+	fill: none; stroke: none; stroke-width: 0;
+}
+.tile .apron {
+	fill: red;
+}
+ .tile .nature_reserve, .tile .protected_land, .tile .national_park, .tile .protected_area {
+ 	fill: forestgreen; stroke: #88D18A; stroke-width: 0.5px; 
+ }
+.tile .park {
+	fill: ForestGreen; stroke: #88D18A; stroke-width: 0.5px; 
+	fill: none; stroke: none; stroke-width: 0px;
+}
+.tile .wood, .tile .forest {
+	fill: #8B4513;
+}
+.tile .garden {
+	fill: #00FF00;
+}
+.tile .farm, .tile .farmland, .tile .farmyard {
+	fill: #FFFF00;
+}
+.tile .beach {
+	fill: #FFFF00;
+}
+.tile .parking {
+	fill: #000000;
+}
+.tile .quarry {
+	fill: silver;
+}
+.tile .wetland {
+	fill: #0000FF;
+}
+.tile .path {
+	stroke: #fb7b7a; stroke-width: 1px;
+}
+*/
 .info {
   position: absolute;
   bottom: 0px;
