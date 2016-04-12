@@ -54,12 +54,17 @@ var tip = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function(d) {
-	  returnHTML = d.id;
-	  if (typeof d.acres !== 'undefined') {
-	  	returnHTML += " <span class=\"acres\">" + d.acres + " acres</span>";
-	  }  
-	  return returnHTML;
+	  if (typeof d != 'undefined' && d.hasOwnProperty('id')) {
+		  returnHTML = d.id;
+		  if (typeof d.acres !== 'undefined') {
+		  	returnHTML += " <span class=\"acres\">" + d.acres + " acres</span>";
+		  }
+		  return returnHTML;
+	  } else {
+		  return false;
+	 }
   })
+  
 
 zoomed();
 
