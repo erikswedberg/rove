@@ -77,10 +77,12 @@ a.zoom:last-child {
 }
 .tile .rail { stroke: #503D3F; stroke-width: 0.5px; }
 .tile .ggnra {
-	fill: rgba(117,204,116,0.3); stroke: #88D18A; stroke-width: 0.5px;
+	fill: rgba(117,204,116,0.2); stroke: #88D18A; stroke-width: 0.5px;
 }
 .tile .ggnra:hover {
-	 fill: rgba(117,204,116,0.5);
+	 fill: rgba(117,204,116,0.06);
+	 stroke: #51bc54;
+	 stroke-width: 1px;
 }
 .info {
   position: absolute;
@@ -127,6 +129,34 @@ a.zoom:last-child {
 	fill: none;
 }
 
+.tile .road {
+	stroke: grey;
+	stroke-width: 1px;
+}
+.tile .road.primary, .tile .road.secondary {
+	stroke: transparent;
+}
+.tile .road.residential, .tile .road.service {	
+	stroke: #CCC;
+	stroke-width: 0.5px;
+}
+.tile .road.track {
+	stroke: darkgoldenrod;
+}
+.tile .road.path {
+	stroke: tan;
+}
+.tile .road.footway {
+	stroke: wheat;
+}
+.tile .road.steps {
+	stroke-dasharray: 5,5;
+	stroke-width: 1.5px;
+	stroke: #CCC;
+}
+.tile .road:hover, .tile .road.residential:hover, .tile .road.service:hover {
+	stroke-width: 2px;
+}
 .tile .test {
 	fill: #ff0000;
 }
