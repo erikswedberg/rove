@@ -46,17 +46,35 @@
              }
 
 	  vector.call(zoom);
+	  
 	  vector.append("g")
 		  .attr("class", "tile")
 	    .selectAll("path")
 	      .data(data.features)
 	    .enter().append("path")
 		  .attr("class", function(d, i) {
-			  return "park "+sanitizeURLName(d.id);
+			  var className =  "park "+sanitizeURLName(d.id);
+			  if (d.ggnra == true) {
+				  className += " ggnra";
+			  }
+			  return className;
 		  })
 		  .attr("d", path)
-		  .on('mouseover', tip.show)
-		  .on('mouseout', tip.hide);
+		  .on('mouseover', 
+		  //function(d,i) { 
+			  //console.log(d,i);
+			//  if (d.hasOwnProperty('id')) {
+			  	tip.show
+			  //}
+		   //}
+	   		)
+		  .on('mouseout', 
+			//function(d,i) {
+			  //if (d.hasOwnProperty('id')) {
+				  tip.hide
+				  //}
+		  //}
+	  );
 	  zoomed();
 	     //.datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
 	      //.attr("class", "states")

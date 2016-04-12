@@ -69,9 +69,17 @@ a.zoom:last-child {
 .tile .minor_road { stroke: #999; stroke-width: 0.5px; }
 .tile .highway { stroke: #FA4A48; stroke-width: 1.5px; }
 .tile .buildings-layer { stroke: #987284; stroke-width: 0.15px; }
-.tile .park, .tile .nature_reserve, .tile .wood, .tile .protected_land { fill: rgba(117,204,116,0.3); stroke: #88D18A; stroke-width: 0.5px; }
+.tile .park, .tile .nature_reserve, .tile .wood, .tile .protected_land { 
+	/*fill: rgba(117,204,116,0.3); stroke: #88D18A; stroke-width: 0.5px; */
+	fill: rgba(117,204,116,0.06);
+	stroke: rgba(136,209,138,0.5); stroke-width: 0.5px;
+	
+}
 .tile .rail { stroke: #503D3F; stroke-width: 0.5px; }
-.tile .park:hover {
+.tile .ggnra {
+	fill: rgba(117,204,116,0.3); stroke: #88D18A; stroke-width: 0.5px;
+}
+.tile .ggnra:hover {
 	 fill: rgba(117,204,116,0.5);
 }
 /*
@@ -161,16 +169,10 @@ a.zoom:last-child {
 }
 
 /* hiding the background of areas which are within other, bigger areas */
-.tile .point-bonita, .tile .rodeo-beach, .tile .rodeo-lagoon-valley, .tile .rocky-point, .tile .hawk-hill, .tile .baker-beach, .tile .fort-point, .tile .golden-gate-bridge {
+.tile .point-bonita, .tile .rodeo-beach, .tile .rodeo-lagoon-valley, .tile .hawk-hill, .tile .baker-beach, .tile .fort-point, .tile .golden-gate-bridge, .tile .tennessee-valley, .tile .oakwood-valley {
 	fill: none;
 }
 
-.tile .mount-tamalpais-state-park, .tile .point-reyes-national-seashore, .tile .bolinas-lagoon {
-	fill: rgba(117,204,116,0.1);
-}
-.tile .mount-tamalpais-state-park:hover, .tile .point-reyes-national-seashore:hover, .tile .bolinas-lagoon:hover {
-	fill: rgba(117,204,116,0.1);
-}
 .tile .test {
 	fill: #ff0000;
 }
