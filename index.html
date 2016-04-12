@@ -18,12 +18,16 @@
 	queue()
 	    .defer(d3.json, "geo/parks.json")
 //	  .defer(d3.json, "tracts.json")
-	    .await(ready);
+	    .await(parksready);
+
+	queue()
+	    .defer(d3.json, "geo/trails.json")
+	    .await(trailsready);
 
 	vector.call(tip);
 
 
-	function ready(error, data) {
+	function parksready(error, data) {
 	  if (error) throw error;
 
       var features = [];
@@ -96,7 +100,66 @@
 	  */
 	}
   
-  
+	function trailsready(error, data) {
+	  if (error) throw error;
+
+      var features = [];
+//       layers.forEach(function(layer){
+//         if(data[layer])
+//         {
+             for(var i in data.features)
+             {
+//                 // Don't include any label placement points
+//                 if(data[layer].features[i].properties.label_placement == 'yes') { continue }
+//
+//                 // Don't show large buildings at z13 or below.
+//                 if(zoom <= 13 && layer == 'buildings') { continue }
+//
+//                 // Don't show small buildings at z14 or below.
+//                 if(zoom <= 14 && layer == 'buildings' && data[layer].features[i].properties.area < 2000) { continue }
+//
+ //                data.features[i].id = i;
+                 features.push(data.features[i]);
+             }
+
+	  vector.call(zoom);
+	  
+	  vector.append("g")
+		  .attr("class", "tile")
+	    .selectAll("path")
+	      .data(data.features)
+	    .enter().append("path")
+		  .attr("class", function(d, i) {
+			  var className =  "road ";
+			  if (typeof d['properties'] != 'undefined' && typeof d['properties']['type'] != 'undefined' && d['properties']['type'] != null) {
+				  className += d['properties']['type'];
+			  }
+			  if (typeof d['properties'] != 'undefined' && typeof d['properties']['name'] != 'undefined' && d['properties']['name'] != null) {
+				  className += " "+sanitizeURLName(d['properties']['name']);
+			  }
+			  return className;
+		  })
+		  .attr("d", path);
+	  zoomed();
+	     //.datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+	      //.attr("class", "states")
+	      //.attr("d", path);
+
+	/*
+	  svg.append("g")
+	      .attr("class", "counties")
+	    .selectAll("path")
+	      .data(topojson.feature(us, us.objects.counties).features)
+	    .enter().append("path")
+	      .attr("class", function(d) { return quantize(rateById.get(d.id)); })
+	      .attr("d", path);
+
+	  svg.append("path")
+	      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+	      .attr("class", "states")
+	      .attr("d", path);
+	  */
+	}
 	//   d3.json("parks2.json", function(error, data) {
 	//     if (error) throw error;
 	//
